@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Manual — Clinical Lab Analysis System</title>
+<meta name="description" content="User manual for the Clinical Lab Analysis System: system requirements, installation and run instructions, required inputs per question, operation steps, and outputs.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='8' fill='%230e7490'/%3E%3Cpath d='M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8' stroke='%23ffffff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.htm" aria-label="Clinical Lab Analysis System — home">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="#0e7490"/>
+        <path d="M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      Clinical Lab Analysis System
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.htm">Home</a>
+      <a href="method.htm">Method</a>
+      <a href="results.htm">Results</a>
+      <a href="demo.htm">Demo</a>
+      <a href="manual.htm" class="active">User Manual</a>
+      <a href="papers.htm">Papers</a>
+      <a href="downloads.htm">Downloads</a>
+      <a href="team.htm">Team</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <p class="kicker">Install, run, and use the system</p>
+    <h1 class="page-title">User Manual</h1>
+    <p class="page-lead">Everything needed to install and operate the Clinical Lab Analysis System: requirements, installation, the inputs each question expects, operation steps, and the outputs you get back. The same manual is included as Section&nbsp;6 of the <a href="files/ClinicalLabAnalysisSystem_FinalReport.pdf">final report (PDF)</a>.</p>
+  </section>
+
+  <section>
+    <h2>1. System requirements and dependencies</h2>
+    <ul>
+      <li><strong>Python 3.10 or later</strong> (developed and tested on Python 3.13).</li>
+      <li>The <strong>uv</strong> package manager (<a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">docs.astral.sh/uv, external link</a>), used to install and pin all dependencies from <code>pyproject.toml</code> / <code>uv.lock</code>.</li>
+      <li><strong>Core dependencies</strong> (installed automatically by <code>uv sync</code>): pandas ≥ 2.2, streamlit ≥ 1.36, httpx ≥ 0.27, python-dotenv ≥ 1.0.</li>
+      <li><strong>Development-only dependencies:</strong> pytest, pytest-cov, playwright.</li>
+      <li><strong>Optional:</strong> an API key for Anthropic, OpenAI, or Google Gemini — only if the optional large-language-model (LLM) assisted routing or the Advanced "AI writes code" mode is desired. <em>The system is fully functional with no key at all.</em></li>
+      <li>The cleaned dataset <code>cleaned_merged_dataset.csv</code> (~130&nbsp;MB) — downloaded automatically on first run, or placed manually in the project root next to <code>app.py</code> (a manual copy can be fetched from <a href="https://drive.google.com/file/d/1AwaAmPRDq_kqRmhaVAPwPAR4YpaEsElb/view" target="_blank" rel="noopener">Google Drive, external link</a>).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>2. Installation and running the system</h2>
+    <ol>
+      <li>Install uv, then from the project root run:
+        <pre><code>uv sync</code></pre>
+        This creates a local virtual environment and installs every pinned dependency.</li>
+      <li><em>(Optional)</em> Copy <code>.env.example</code> to <code>.env</code> and fill in one provider API key to enable LLM-assisted routing and the Advanced code-generation mode. Leave it empty to run in fully rule-based, deterministic mode.</li>
+      <li>Ensure <code>cleaned_merged_dataset.csv</code> is present in the project root — or simply start the app and let it download the file automatically on first launch. (It can also be downloaded manually from the <a href="https://drive.google.com/file/d/1AwaAmPRDq_kqRmhaVAPwPAR4YpaEsElb/view" target="_blank" rel="noopener">shared Google Drive link</a> and placed next to <code>app.py</code>.)</li>
+      <li>Launch the interactive UI:
+        <pre><code>uv run streamlit run app.py</code></pre>
+        then open the printed local URL (typically <code>http://localhost:8501</code>).</li>
+      <li>Alternatively, run a single question end-to-end from the command line:
+        <pre><code>uv run python main_pipeline.py</code></pre></li>
+      <li>Run the automated test suite (170 tests, with a coverage report):
+        <pre><code>uv run pytest</code></pre></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>3. Required inputs, by question</h2>
+    <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th scope="col">Question</th><th scope="col">Required inputs</th></tr></thead>
+      <tbody>
+        <tr><td>Q1, Q4, Q7, Q9 — abnormal results / all tests / counts / distinct abnormal tests for an admission</td><td>Admission ID (<code>HADM_ID</code>)</td></tr>
+        <tr><td>Q2, Q3, Q5, Q6, Q8 — latest value / trend / first-vs-last / summary stats / abnormal results for a lab</td><td>Admission ID + lab test (name or <code>ITEMID</code>)</td></tr>
+        <tr><td>Q10 — values within a date range</td><td>Admission ID + lab test + start/end date</td></tr>
+        <tr><td>Q11 — all admissions for a patient</td><td>Patient ID (<code>SUBJECT_ID</code>)</td></tr>
+        <tr><td>Q12 — abnormal vs normal counts across all admissions</td><td>None (runs across the whole dataset)</td></tr>
+        <tr><td>Natural-language box (any question above)</td><td>A free-text sentence, e.g. <em>"Show hematocrit trend for admission 107521"</em></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Operation steps</h2>
+    <h3>Automatic, on startup</h3>
+    <ul>
+      <li>The dataset is loaded once (<code>data_prep.py</code>) and, if missing, downloaded from the configured source.</li>
+      <li>The registry-driven function context used by the code generator and executor is built from <code>questions.py</code>.</li>
+    </ul>
+    <h3>Manual, per query</h3>
+    <ol>
+      <li>From the Welcome screen, choose the <strong>Doctor</strong> or <strong>Researcher</strong> workspace (or use the direct question dropdown).</li>
+      <li>Pick a category and a question (a short help caption under the selector explains the chosen question), or expand <em>"Ask a clinical lab question in natural language"</em> and type one.</li>
+      <li>Fill in the parameter widgets that appear for the chosen question — only the parameters that question needs are shown.</li>
+      <li><em>(Optional)</em> Choose an interpretation mode for natural-language input (<em>Rules only</em> / <em>Rules, then AI</em> / <em>Advanced: AI writes code</em>), or tick the <em>"inject a typo"</em> demo checkbox (available for questions 1–5) to see the correction loop fire.</li>
+      <li>Click <strong>Run Analysis</strong> (or <strong>Interpret &amp; Run</strong> for the natural-language box).</li>
+    </ol>
+    <p class="note">If neither the rules nor the AI-assisted router can match a typed question (and an API key is configured), a popup offers to re-run it in the Advanced "AI writes code" mode — or cancel — so you are never left at a dead end.</p>
+  </section>
+
+  <section>
+    <h2>5. Outputs</h2>
+    <ul>
+      <li>A color-coded status line (green = passed, blue = no matching records, red = failed).</li>
+      <li>Summary metric cards appropriate to the question (e.g. latest value, first-vs-last difference, count/min/max/mean, abnormal counts).</li>
+      <li>A trend line chart for time-series questions (trend and date-range questions).</li>
+      <li><strong>Final Result</strong> tab: the result table, with a "Download Result as CSV" button.</li>
+      <li><strong>Validation Audit</strong> tab: which structural and clinical rules were checked, and whether they passed.</li>
+      <li><strong>Correction Attempts</strong> tab: every attempt's code, execution outcome, and validation outcome ("No correction attempts were needed" in the normal case).</li>
+      <li><strong>Generated Code</strong> tab: the exact Python snippet that was executed to produce the result. (In Advanced mode the tabs are: Final Result / AI Process / Generated Code / Attempts.)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>6. Repository / code structure</h2>
+    <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th scope="col">Path</th><th scope="col">Contents</th></tr></thead>
+      <tbody>
+        <tr><td><code>app.py</code></td><td>Streamlit UI</td></tr>
+        <tr><td><code>main_pipeline.py</code></td><td>End-to-end console pipeline</td></tr>
+        <tr><td><code>questions.py</code></td><td>Question registry (single source of truth)</td></tr>
+        <tr><td><code>question_router.py</code>, <code>llm_router.py</code>, <code>llm_client.py</code></td><td>Controlled / optional LLM-assisted natural-language routing</td></tr>
+        <tr><td><code>data_prep.py</code></td><td>Dataset load + per-question data functions</td></tr>
+        <tr><td><code>code_generation.py</code></td><td>Template code generation</td></tr>
+        <tr><td><code>execution.py</code></td><td>Registry-path execution wrapper</td></tr>
+        <tr><td><code>validation.py</code></td><td>Output validation</td></tr>
+        <tr><td><code>correction.py</code></td><td>Rule-based correction loop</td></tr>
+        <tr><td><code>result_presentation.py</code></td><td>Console presentation</td></tr>
+        <tr><td><code>sandbox.py</code>, <code>code_agent.py</code>, <code>agent_pipeline.py</code>, <code>presentation_agent.py</code></td><td>Experimental, sandboxed LLM code-generation mode</td></tr>
+        <tr><td><code>tests/</code></td><td>170 unit + end-to-end tests</td></tr>
+        <tr><td><code>docs/</code></td><td>PRD, PLAN, TODO, REPORT, DEMO, SLIDES, TEST_REPORT, guidelines gap analysis, decision log, implementation plans, screenshots</td></tr>
+        <tr><td><code>pyproject.toml</code>, <code>uv.lock</code></td><td>Dependency management (uv)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="note">The full source code is available in the project repository — see <a href="downloads.htm">Materials &amp; Downloads</a>.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div><span class="names">Hala Hillou · Dana Nmarny · Anas Khoury · Alon Engel</span></div>
+  <div>Clinical Lab Analysis System — Seminar: Software Engineering in the Age of AI</div>
+  <div>Department of Information Systems, University of Haifa · 2026</div>
+</footer>
+
+</body>
+</html>

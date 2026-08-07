@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team &amp; Process — Clinical Lab Analysis System</title>
+<meta name="description" content="The team behind the Clinical Lab Analysis System, the development phases, the challenges met during development and their resolutions, and the lessons learned.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='8' fill='%230e7490'/%3E%3Cpath d='M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8' stroke='%23ffffff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.htm" aria-label="Clinical Lab Analysis System — home">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="#0e7490"/>
+        <path d="M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      Clinical Lab Analysis System
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.htm">Home</a>
+      <a href="method.htm">Method</a>
+      <a href="results.htm">Results</a>
+      <a href="demo.htm">Demo</a>
+      <a href="manual.htm">User Manual</a>
+      <a href="papers.htm">Papers</a>
+      <a href="downloads.htm">Downloads</a>
+      <a href="team.htm" class="active">Team</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <p class="kicker">Who we are &amp; how we worked</p>
+    <h1 class="page-title">Team &amp; Process</h1>
+    <p class="page-lead">The four of us built the Clinical Lab Analysis System for the seminar <em>Software Engineering in the Age of AI</em> at the University of Haifa. This page covers who did what, how the project evolved, the difficulties we ran into, and what we learned from them.</p>
+  </section>
+
+  <section>
+    <h2>The team</h2>
+    <p>We worked as two sub-teams around a shared core, mirroring the system's own split between data and pipeline:</p>
+    <div class="grid-2">
+      <div class="card member">
+        <h3>Hala Hillou &amp; Dana Nmarny</h3>
+        <p class="role">Questions &amp; data sub-team</p>
+        <p>Defined and refined the clinical question set, prepared and cleaned the MIMIC-III (Medical Information Mart for Intensive Care) dataset, and built the question-selection and data-preparation components.</p>
+      </div>
+      <div class="card member">
+        <h3>Anas Khoury &amp; Alon Engel</h3>
+        <p class="role">Pipeline, UI &amp; tests sub-team</p>
+        <p>Built code generation, execution, validation, the correction loop, and result presentation; led the registry refactor; and implemented the natural-language router, the Streamlit UI, and the test suite.</p>
+      </div>
+    </div>
+    <p style="margin-top:12px;">Test cases, integration, and evaluation were shared work across all four team members.</p>
+  </section>
+
+  <section>
+    <h2>Development phases</h2>
+    <ol class="timeline">
+      <li>
+        <strong>Scope and data</strong>
+        Froze the MVP scope (a small predefined question set; ADMISSIONS + LABEVENTS + optional D_LABITEMS; lab rows restricted to a valid admission ID), chose the first 5 question types, inspected the raw MIMIC-III schema in Google Colab, and built the cleaned, filtered, merged working dataset.
+      </li>
+      <li>
+        <strong>First MVP</strong>
+        Defined the 5-module architecture (question selection, data preparation, code generation, validation &amp; correction, result presentation), picked the Python + pandas + Streamlit stack, and implemented each module — first against mock DataFrames to validate the interfaces, then wired to the real dataset — reaching a working end-to-end console pipeline before building the Streamlit UI.
+      </li>
+      <li>
+        <strong>Registry refactor and polish</strong>
+        Replaced the 5 hard-coded questions with a single config-driven <code>QUESTION_REGISTRY</code> that every other module reads from, added 6 further question types, and polished the UI — category filter, dynamic per-question parameter widgets, trend chart, status banner, and a pinned dark theme.
+      </li>
+      <li>
+        <strong>Final deliverables and extensions</strong>
+        Wrote the report, slide deck, and demo script; added the 12th, dataset-wide aggregate question; added controlled natural-language routing, later with an optional large-language-model (LLM) fallback; added the experimental sandboxed "Advanced: AI writes code" agent loop inspired by AgentCoder and Self-Edit; and added the role-based Doctor / Researcher workspace UI.
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Challenges and how we solved them</h2>
+
+    <details class="challenge" open>
+      <summary>The cleaned dataset was too large for git</summary>
+      <div class="body">
+        <p><code>cleaned_merged_dataset.csv</code> (~130&nbsp;MB) exceeds GitHub's 100&nbsp;MB per-file limit, and Git LFS was judged not worth its quota and setup overhead for a course project. <strong>Resolution:</strong> the dataset is kept out of version control and the app downloads it automatically on first run from a shared location, with a documented manual fallback.</p>
+      </div>
+    </details>
+
+    <details class="challenge">
+      <summary>A naive typo-correction rule corrupted a valid function name</summary>
+      <div class="body">
+        <p>The first version of the rule-based corrector used plain substring replacement, so the fix for the typo <code>get_abnormal_result</code> silently rewrote the valid, longer identifier <code>get_abnormal_results_for_lab</code> — which contains that substring — into something else. <strong>Resolution:</strong> the corrector now matches whole identifiers only, using regex word boundaries, and a regression test pins this behavior.</p>
+      </div>
+    </details>
+
+    <details class="challenge">
+      <summary>Theme inconsistency made the UI unreadable for some users</summary>
+      <div class="body">
+        <p>Headers and cards were unreadable when a viewer's system theme did not match the app's assumptions. <strong>Resolution:</strong> the Streamlit theme was pinned explicitly in <code>.streamlit/config.toml</code>, so the app renders identically regardless of the viewer's OS or browser theme.</p>
+      </div>
+    </details>
+
+    <details class="challenge">
+      <summary>How much autonomy to give generated code</summary>
+      <div class="body">
+        <p>The initial scope decision excluded any LLM code generation from the MVP, since free-text questions would break the validator's assumption of known expected columns and could execute arbitrary code. The decision was later revisited — but only by adding a second, clearly optional and off-by-default path, gated by a purpose-built sandbox (an abstract-syntax-tree allow-list, restricted builtins, a worker-thread timeout, and a row cap) that was built and tested <em>before</em> any LLM-authored code was allowed to run at all, rather than by relaxing the guarantees of the trusted registry path.</p>
+      </div>
+    </details>
+
+    <details class="challenge">
+      <summary>Keeping a growing question set consistent across modules</summary>
+      <div class="body">
+        <p>As the question count grew from 5 toward 12, keeping the UI, code generator, validator, and pipeline in sync by hand became error-prone. <strong>Resolution:</strong> the registry refactor introduced <code>questions.py</code> as the single source of truth. Every component derives its behavior from the registry, so adding a new question now requires updating only one central definition.</p>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>Lessons learned</h2>
+    <ul>
+      <li><strong>A single source of truth is worth the refactor.</strong> The question registry removed an entire class of drift bugs between the UI, the generator, and the validator — and made every later addition (questions 6–12, the role-based UI, the code-generation agent) a localized change.</li>
+      <li><strong>Deterministic validation plus a bounded correction loop is a cheap, high-value safety net.</strong> It turns silent or malformed output into an explicit, auditable status without needing a model call for the common failure modes.</li>
+      <li><strong>Sandboxing has to come before capability.</strong> The AST allow-list, restricted builtins, timeout, and row cap were designed and tested before any LLM-authored code was allowed to execute — not retrofitted afterward.</li>
+      <li><strong>Lightweight, in-repository orchestration beat heavier frameworks.</strong> Skipping CrewAI / AutoGen / LangGraph kept the experimental code-generation loop easy to debug and appropriate for the project's scope — consistent with AgentCoder's own finding that clearly separated responsibilities matter more than orchestration machinery.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Acknowledgment</h2>
+    <p>We thank <strong>Prof. Iris Reinhartz-Berger</strong> for her guidance throughout the seminar <em>Software Engineering in the Age of AI</em>, Department of Information Systems, University of Haifa.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div><span class="names">Hala Hillou · Dana Nmarny · Anas Khoury · Alon Engel</span></div>
+  <div>Clinical Lab Analysis System — Seminar: Software Engineering in the Age of AI</div>
+  <div>Department of Information Systems, University of Haifa · 2026</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Results &amp; Evaluation — Clinical Lab Analysis System</title>
+<meta name="description" content="Evaluation of the Clinical Lab Analysis System: manual verification examples, 170 automated tests with 94% coverage, edge cases, baseline comparisons, conclusions and future work.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='8' fill='%230e7490'/%3E%3Cpath d='M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8' stroke='%23ffffff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.htm" aria-label="Clinical Lab Analysis System — home">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="#0e7490"/>
+        <path d="M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      Clinical Lab Analysis System
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.htm">Home</a>
+      <a href="method.htm">Method</a>
+      <a href="results.htm" class="active">Results</a>
+      <a href="demo.htm">Demo</a>
+      <a href="manual.htm">User Manual</a>
+      <a href="papers.htm">Papers</a>
+      <a href="downloads.htm">Downloads</a>
+      <a href="team.htm">Team</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <p class="kicker">Implementation &amp; evaluation</p>
+    <h1 class="page-title">Results &amp; Evaluation</h1>
+    <p class="page-lead">All twelve predefined clinical laboratory question types passed both manual verification and automated validation, demonstrating that the registry-driven pipeline operates correctly across all supported analysis scenarios.</p>
+
+    <div class="stats-row">
+      <div class="stat"><div class="value">12 / 12</div><div class="label">question types pass manual + automated checks</div></div>
+      <div class="stat"><div class="value">170</div><div class="label">automated tests, all passing</div></div>
+      <div class="stat"><div class="value">94%</div><div class="label">line coverage across the codebase</div></div>
+      <div class="stat"><div class="value">85%</div><div class="label">minimum coverage gate enforced in pyproject.toml</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Manual evaluation on real MIMIC-III admissions</h2>
+    <p>Each supported question type was manually evaluated using multiple admissions and patients from the cleaned MIMIC-III (Medical Information Mart for Intensive Care) dataset. Representative examples:</p>
+    <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th scope="col">Question</th><th scope="col">Example input</th><th scope="col">Verified result</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 — abnormal lab results</td><td>Admission 145834</td><td>Abnormal results returned (all rows FLAG&nbsp;=&nbsp;abnormal)</td></tr>
+        <tr><td>Q2 — latest lab value</td><td>Admission 199884, Chloride</td><td>Latest value 103&nbsp;mEq/L</td></tr>
+        <tr><td>Q3 — lab trend over time</td><td>Admission 107521, Hematocrit</td><td>Decreasing trend, 57.9%&nbsp;→&nbsp;44.4%</td></tr>
+        <tr><td>Q4 — all lab tests</td><td>Admission 158675</td><td>All lab tests for the admission listed</td></tr>
+        <tr><td>Q5 — first vs last value</td><td>Admission 177047, pO2</td><td>First 82, last 103, difference +21&nbsp;mm&nbsp;Hg</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Automated validation of all 12 questions</h2>
+    <p>An end-to-end test drives the Streamlit UI (via <code>AppTest</code>) through every question, natural-language routing, and the experimental code-generation mode. Each question's output is checked against its expected structure and clinical rule:</p>
+    <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col">Expected result</th><th scope="col">Status</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Abnormal lab results</td><td>Table, all FLAG = abnormal</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>2</td><td>Latest lab value</td><td>Exactly 1 row</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>3</td><td>Lab trend over time</td><td>Time-sorted table + line chart</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>4</td><td>All lab tests</td><td>Table of all tests</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>5</td><td>First vs last value</td><td>1-row comparison incl. difference</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>6</td><td>Summary statistics</td><td>1 row: count / min / max / mean</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>7</td><td>Abnormal vs normal counts</td><td>1 row: total / abnormal / normal</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>8</td><td>Abnormal results for a lab</td><td>Abnormal rows, or graceful "no records"</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>9</td><td>Distinct abnormal tests</td><td>Table of tests with abnormal counts</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>10</td><td>Values in a date range</td><td>Time-sorted table + line chart</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>11</td><td>All admissions for a patient</td><td>Table of the patient's admissions</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+        <tr><td>12</td><td>Abnormal vs normal, all admissions</td><td>One row per admission, most abnormal first</td><td><span class="badge-pass">✓ Pass</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Test coverage by module</h2>
+    <p>170 automated tests cover every module, plus the end-to-end UI flow. Line coverage per module (total: 94%):</p>
+    <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th scope="col">Module</th><th scope="col" style="width:45%">Line coverage</th></tr></thead>
+      <tbody>
+        <tr><td><code>agent_pipeline</code> · <code>code_generation</code> · <code>correction</code> · <code>execution</code> · <code>llm_router</code> · <code>result_presentation</code></td>
+            <td class="covcell"><span class="covnum">100%</span><div class="covbar" aria-hidden="true"><span style="width:100%"></span></div></td></tr>
+        <tr><td><code>sandbox</code></td>
+            <td class="covcell"><span class="covnum">99%</span><div class="covbar" aria-hidden="true"><span style="width:99%"></span></div></td></tr>
+        <tr><td><code>data_prep</code></td>
+            <td class="covcell"><span class="covnum">96%</span><div class="covbar" aria-hidden="true"><span style="width:96%"></span></div></td></tr>
+        <tr><td><code>main_pipeline</code> · <code>validation</code></td>
+            <td class="covcell"><span class="covnum">95%</span><div class="covbar" aria-hidden="true"><span style="width:95%"></span></div></td></tr>
+        <tr><td><code>app</code> · <code>code_agent</code></td>
+            <td class="covcell"><span class="covnum">94%</span><div class="covbar" aria-hidden="true"><span style="width:94%"></span></div></td></tr>
+        <tr><td><code>presentation_agent</code></td>
+            <td class="covcell"><span class="covnum">92%</span><div class="covbar" aria-hidden="true"><span style="width:92%"></span></div></td></tr>
+        <tr><td><code>question_router</code> · <code>questions</code></td>
+            <td class="covcell"><span class="covnum">91%</span><div class="covbar" aria-hidden="true"><span style="width:91%"></span></div></td></tr>
+        <tr><td><code>llm_client</code></td>
+            <td class="covcell"><span class="covnum">90%</span><div class="covbar" aria-hidden="true"><span style="width:90%"></span></div></td></tr>
+        <tr><td><strong>Total</strong></td>
+            <td class="covcell"><span class="covnum"><strong>94%</strong></span><div class="covbar" aria-hidden="true"><span style="width:94%"></span></div></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Edge cases exercised</h2>
+    <ul>
+      <li><strong>No-records path:</strong> a question with no matching data shows a neutral "no matching records" state rather than an error.</li>
+      <li><strong>Correction loop:</strong> a deliberately misspelled function name is auto-corrected and re-run (used as a live demo, since the real generator never emits a typo on its own).</li>
+      <li><strong>Regression guard:</strong> the typo corrector no longer corrupts the valid name <code>get_abnormal_results_for_lab</code>, which contains a shorter valid identifier as a substring.</li>
+      <li><strong>Validation failures:</strong> execution errors, a <code>None</code> result, a non-DataFrame result, missing columns, an empty frame, and a failing per-question rule are all handled and reported distinctly.</li>
+      <li><strong>Dataset-wide aggregate (Q12):</strong> per-admission counts are cross-checked against the single-admission view (Q7), and <em>Abnormal + Normal = Total Tests</em> is validated for every row.</li>
+      <li><strong>Code-generation sandbox:</strong> imports, <code>open</code>, dunder/underscore attributes, file/network/eval methods, loops, and syntax errors are all rejected by the abstract-syntax-tree (AST) allow-list; runtime errors, timeouts, and row caps are exercised with a fake large language model (LLM) that is made to fail, be blocked, and refine.</li>
+    </ul>
+
+    <div class="gallery">
+      <figure>
+        <a href="assets/img/validation_tab.png"><img src="assets/img/validation_tab.png" alt="The Validation Audit tab, listing the structural and clinical rules that were checked for a query and their outcomes."></a>
+        <figcaption><strong>The Validation Audit tab.</strong> Every run shows which structural and clinical rules were checked and whether they passed.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/correction_attempts.png"><img src="assets/img/correction_attempts.png" alt="The Correction Attempts tab after the inject-a-typo demo: attempt 1 fails on a misspelled function name and attempt 2 succeeds after automatic repair."></a>
+        <figcaption><strong>The Correction Attempts tab</strong> after the "inject a typo" demo: attempt&nbsp;1 fails on a misspelled function name and is auto-repaired for attempt&nbsp;2.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Comparison to baselines and discussion</h2>
+    <p>The project has no external, pre-existing system to benchmark against, so three <strong>internal baselines (ablations)</strong> were used to justify each guardrail rather than assuming it a priori:</p>
+    <div class="grid-3">
+      <div class="card">
+        <h3>vs. unguarded execution</h3>
+        <p>Running the same generated snippet with a plain <code>exec()</code> and no validation silently returns whatever the code produced — including an empty DataFrame or a malformed output — with no indication that the result may be invalid. The validation layer converts such silent failures into explicit outcomes, and the correction layer automatically recovers a meaningful class of failures instead of exposing them to the user.</p>
+      </div>
+      <div class="card">
+        <h3>vs. rule-based-only routing</h3>
+        <p>The default rule-based router is fully reproducible and needs no external API — but recognizes only phrasings covered by its predefined rules. The optional LLM-assisted fallback understands a wider range of formulations at the cost of external dependency and reduced determinism. That trade-off is why it is implemented as a fallback, never the default.</p>
+      </div>
+      <div class="card">
+        <h3>vs. the trusted registry path</h3>
+        <p>The deterministic 12-question pipeline showed consistent, test-verified behavior throughout the evaluation. The optional Advanced mode trades some of that predictability for flexibility: it can answer questions outside the registry, but its AST allow-list rejects unsupported constructs and its output passes only a generic (not clinical) validator. This comparison supports keeping the registry path as the trusted default.</p>
+      </div>
+    </div>
+    <p style="margin-top:14px;">Overall, the evaluation supports the project's central claim: <strong>a small, fully specified set of clinical laboratory questions can be answered reliably through a generate → execute → validate → correct pipeline</strong>, while more open-ended LLM-generated analyses can be supported only when execution is sandboxed and every result is still verified by a deterministic validation stage before being presented to the user.</p>
+  </section>
+
+  <hr class="sep">
+
+  <section>
+    <h2>Conclusions</h2>
+    <p>The project demonstrates that a small, fully specified set of clinical laboratory questions can be answered reliably and transparently by a generate → execute → validate → correct → present pipeline built on a single-source-of-truth question registry — and that the same pattern can be extended, cautiously, toward more open-ended LLM-authored queries as long as execution is sandboxed and every result still passes through a deterministic gate before it is trusted.</p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Advantages</h3>
+        <ul>
+          <li><strong>Reliable and reproducible by default</strong> — the trusted path never calls an external model and is fully deterministic and test-covered.</li>
+          <li><strong>Transparent and auditable</strong> — every run shows the generated code, the validation outcome, and the full correction history.</li>
+          <li><strong>Maintainable</strong> — the config-driven registry keeps UI, generator, validator, and pipeline in sync; adding a question is a one-place change.</li>
+          <li><strong>Safe-by-default extensibility</strong> — LLM-authored code is possible but strictly opt-in and sandboxed.</li>
+          <li><strong>Usable for two audiences</strong> — the role-based Doctor / Researcher workspaces surface what each user needs without hiding the shared pipeline.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Limitations</h3>
+        <ul>
+          <li>Restricted, by design, to 12 predefined question types; arbitrary clinical questions require extending the registry or the weaker Advanced mode.</li>
+          <li>Operates on a single static CSV rather than a live SQL backend.</li>
+          <li>The rule-based corrector repairs only a small, explicit set of known typos — unlike a learned, fault-aware editor such as Self-Edit.</li>
+          <li>The sandbox's AST allow-list rejects some valid, more complex analyses along with unsafe ones.</li>
+          <li>Evaluation covers one dataset and one clinical domain; the experimental LLM mode was tested mostly with a mock LLM for control flow, not benchmarked at scale.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Future work</h2>
+    <ul>
+      <li>Broaden the question registry, or pair a more capable LLM-assisted router with the same validation guarantees, so more clinical questions can be answered through the trusted path.</li>
+      <li>Replace the static CSV with a live SQL backend so results reflect current data and larger cohorts can be queried efficiently.</li>
+      <li>Strengthen the guarded code-generation path: a broader, still-safe AST allow-list; benchmarking across multiple LLM providers; and a learned, fault-aware correction step in the spirit of Self-Edit.</li>
+      <li>Run a small user study with clinicians and researchers comparing the role-based workspace against ad-hoc querying.</li>
+      <li>Add authentication and multi-user session state if the system moves beyond a single-user course demo.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div><span class="names">Hala Hillou · Dana Nmarny · Anas Khoury · Alon Engel</span></div>
+  <div>Clinical Lab Analysis System — Seminar: Software Engineering in the Age of AI</div>
+  <div>Department of Information Systems, University of Haifa · 2026</div>
+</footer>
+
+</body>
+</html>

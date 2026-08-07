@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo &amp; Screenshots — Clinical Lab Analysis System</title>
+<meta name="description" content="Screenshot walkthrough of the Clinical Lab Analysis System: the role-based welcome screen, all 12 clinical questions, natural-language input, validation audit, and the self-correction loop.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='8' fill='%230e7490'/%3E%3Cpath d='M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8' stroke='%23ffffff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.htm" aria-label="Clinical Lab Analysis System — home">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="#0e7490"/>
+        <path d="M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      Clinical Lab Analysis System
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.htm">Home</a>
+      <a href="method.htm">Method</a>
+      <a href="results.htm">Results</a>
+      <a href="demo.htm" class="active">Demo</a>
+      <a href="manual.htm">User Manual</a>
+      <a href="papers.htm">Papers</a>
+      <a href="downloads.htm">Downloads</a>
+      <a href="team.htm">Team</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <p class="kicker">The system in action</p>
+    <h1 class="page-title">Demo &amp; Screenshots</h1>
+    <p class="page-lead">A complete visual walkthrough of the Streamlit application: the role-based entry point, every one of the 12 supported questions running on real data from MIMIC-III (Medical Information Mart for Intensive Care), and the transparency features — natural-language input, the validation audit, and the self-correction loop. Click any screenshot to view it full size.</p>
+  </section>
+
+  <section>
+    <h2>Welcome screen and role-based workspaces</h2>
+    <p>The app opens on a Welcome page with two role cards — <strong>Doctor</strong> (fast admission-level review) and <strong>Researcher</strong> (dataset-level, reproducible analysis) — each leading to a workspace that surfaces its role's questions first as clickable cards, with a switch-role button in the header. Both workspaces share the same backend pipeline and analysis panel.</p>
+    <div class="gallery">
+      <figure>
+        <a href="assets/img/welcome.png"><img src="assets/img/welcome.png" alt="The Welcome entry screen with the Doctor and Researcher role cards collapsed."></a>
+        <figcaption><strong>Welcome screen.</strong> The two entry roles, each with a one-line description of its focus.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/welcome_expanded.png"><img src="assets/img/welcome_expanded.png" alt="The Welcome screen with the Implementation Notes and Project Evaluation sections expanded below the role cards."></a>
+        <figcaption><strong>Welcome details expanded.</strong> The Welcome page's Implementation Notes (validation &amp; correction) and Project Evaluation sections, opened below the role cards.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>The 12 supported questions</h2>
+    <p>Each run shows summary metric cards, an optional trend chart, a color-coded status, and four tabs: <em>Final Result</em> (with CSV download), <em>Validation Audit</em>, <em>Correction Attempts</em>, and <em>Generated Code</em>.</p>
+    <div class="gallery">
+      <figure>
+        <a href="assets/img/q01.png"><img src="assets/img/q01.png" alt="Question 1 running in the app: abnormal lab results for a specific admission."></a>
+        <figcaption><strong>Q1.</strong> Show abnormal lab results for a specific admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q02.png"><img src="assets/img/q02.png" alt="Question 2 running in the app: the latest value of a selected lab test during an admission."></a>
+        <figcaption><strong>Q2.</strong> Return the latest value of a selected lab test during an admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q03.png"><img src="assets/img/q03.png" alt="Question 3 running in the app: the trend of a selected lab test over time, with a line chart."></a>
+        <figcaption><strong>Q3.</strong> Show the trend of a selected lab test over time during an admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q04.png"><img src="assets/img/q04.png" alt="Question 4 running in the app: all lab tests performed during a specific admission."></a>
+        <figcaption><strong>Q4.</strong> Show all lab tests performed during a specific admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q05.png"><img src="assets/img/q05.png" alt="Question 5 running in the app: comparing the first and last numeric value of a selected lab test."></a>
+        <figcaption><strong>Q5.</strong> Compare the first and last numeric value of a selected lab test.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q06.png"><img src="assets/img/q06.png" alt="Question 6 running in the app: summary statistics (minimum, maximum, mean) of a lab test."></a>
+        <figcaption><strong>Q6.</strong> Show summary statistics (min / max / mean) of a lab test during an admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q07.png"><img src="assets/img/q07.png" alt="Question 7 running in the app: counting abnormal versus normal results during an admission."></a>
+        <figcaption><strong>Q7.</strong> Count abnormal vs normal results during an admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q08.png"><img src="assets/img/q08.png" alt="Question 8 running in the app: abnormal results for a specific lab test during an admission."></a>
+        <figcaption><strong>Q8.</strong> Show abnormal results for a specific lab test during an admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q09.png"><img src="assets/img/q09.png" alt="Question 9 running in the app: all lab tests flagged abnormal during an admission."></a>
+        <figcaption><strong>Q9.</strong> List all abnormal flagged lab tests during an admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q10.png"><img src="assets/img/q10.png" alt="Question 10 running in the app: lab values within a chosen date range, with a chart."></a>
+        <figcaption><strong>Q10.</strong> Show lab values within a date range during an admission.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q11.png"><img src="assets/img/q11.png" alt="Question 11 running in the app: all admissions for a specific patient."></a>
+        <figcaption><strong>Q11.</strong> List all admissions for a specific patient.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q12.png"><img src="assets/img/q12.png" alt="Question 12 running in the app: abnormal versus normal counts across all admissions in the dataset."></a>
+        <figcaption><strong>Q12.</strong> Count abnormal vs normal results across all admissions (dataset-wide aggregate).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Transparency features</h2>
+    <p>The system never shows just an answer — every result is accompanied by the code that produced it, the validation rules it passed, and any correction attempts along the way.</p>
+    <div class="gallery">
+      <figure>
+        <a href="assets/img/nl_query.png"><img src="assets/img/nl_query.png" alt="The natural-language question box: a free-text clinical question routed to a supported template with extracted parameters."></a>
+        <figcaption><strong>Natural-language input.</strong> Free text like "Show hematocrit trend for admission 107521" is routed to a supported template and its parameters — never to generated code. Dataset-wide phrasings such as "Show abnormal lab results for all admissions" route to Q12 instead of demanding an admission ID; and if no template matches at all, a popup offers to re-run the question in the Advanced mode, so you are never left at a dead end.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/validation_tab.png"><img src="assets/img/validation_tab.png" alt="The Validation Audit tab listing structural and clinical checks and their outcomes."></a>
+        <figcaption><strong>Validation Audit.</strong> The structural and clinical rules checked for this run, and their outcomes.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/correction_attempts.png"><img src="assets/img/correction_attempts.png" alt="The Correction Attempts tab showing a failed first attempt with a misspelled function name and a successful auto-repaired second attempt."></a>
+        <figcaption><strong>Self-correction, live.</strong> With the "inject a typo" demo enabled, attempt&nbsp;1 fails on a misspelled function name; the corrector repairs it and attempt&nbsp;2 passes.</figcaption>
+      </figure>
+    </div>
+    <p class="note">Want to run it yourself? The <a href="manual.htm">User Manual</a> has the full installation and run instructions, and the source code is linked on the <a href="downloads.htm">Downloads</a> page.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div><span class="names">Hala Hillou · Dana Nmarny · Anas Khoury · Alon Engel</span></div>
+  <div>Clinical Lab Analysis System — Seminar: Software Engineering in the Age of AI</div>
+  <div>Department of Information Systems, University of Haifa · 2026</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Method &amp; Architecture — Clinical Lab Analysis System</title>
+<meta name="description" content="The registry-driven pipeline, module architecture, algorithms, sandbox guardrails, and dataset preparation of the Clinical Lab Analysis System.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='8' fill='%230e7490'/%3E%3Cpath d='M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8' stroke='%23ffffff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.htm" aria-label="Clinical Lab Analysis System — home">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="#0e7490"/>
+        <path d="M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      Clinical Lab Analysis System
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.htm">Home</a>
+      <a href="method.htm" class="active">Method</a>
+      <a href="results.htm">Results</a>
+      <a href="demo.htm">Demo</a>
+      <a href="manual.htm">User Manual</a>
+      <a href="papers.htm">Papers</a>
+      <a href="downloads.htm">Downloads</a>
+      <a href="team.htm">Team</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <p class="kicker">Engineering background &amp; proposed method</p>
+    <h1 class="page-title">Method &amp; Architecture</h1>
+    <p class="page-lead">The system is a layered, registry-driven pipeline: every supported question is defined once, in one place, and the user interface, code generator, validator, and execution pipeline all derive their behavior from that single definition.</p>
+  </section>
+
+  <section>
+    <h2>The approach</h2>
+    <p>A user selects one of the supported clinical questions (or types a natural-language question that is routed to one). The system then <strong>generates</strong> a short, readable Python snippet that calls a known data-preparation function with the user's parameters; <strong>executes</strong> that snippet; <strong>validates</strong> the result against structural rules (is it a DataFrame? does it have the expected columns? is it non-empty?) plus a per-question clinical rule (for example, "all rows must be flagged abnormal"); and, only if execution or validation fails, applies a small rule-based <strong>correction</strong> and retries, up to a bounded number of attempts. The final result, the generated code, the validation message, and the full correction history are all shown to the user.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Trusted default: the 12-question registry</h3>
+        <p>The constrained pipeline above is the default execution path. It never calls an external model, is fully deterministic and reproducible, and applies question-specific clinical validation rules. All 12 supported question types run through it.</p>
+      </div>
+      <div class="card">
+        <h3>Optional &amp; experimental: "Advanced: AI writes code"</h3>
+        <p>An explicitly opt-in, off-by-default mode invokes a large language model (LLM) "programmer agent" that writes a pandas snippet for a free-form question. That snippet never runs directly: it is checked against an abstract-syntax-tree (AST) allow-list and executed inside a restricted sandbox, following the same generate → execute → validate → retry pipeline before anything is shown to the user.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Architecture — single-responsibility modules around one registry</h2>
+    <div class="callout">
+      <p class="label">Single source of truth</p>
+      <p>The <strong>question registry</strong> (<code>questions.py</code>) is the central configuration layer. The UI, code generation, validation, and execution pipeline all derive their behavior from the same registry definition — so adding a question is a one-place change, and the components cannot drift out of sync.</p>
+    </div>
+
+    <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th scope="col">Module</th><th scope="col">Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td><code>questions.py</code></td><td><em>QuestionSpec</em> registry (<code>QUESTION_REGISTRY</code>) — the single source of truth: id, label, parameters, data function, expected columns, category, optional validator and chart spec</td></tr>
+        <tr><td><code>data_prep.py</code></td><td>Loads the cleaned dataset once; one data function per supported question</td></tr>
+        <tr><td><code>code_generation.py</code></td><td>Builds a runnable code string, e.g. <code>result = get_lab_trend(107521, 51221)</code>, from a QuestionSpec + parameters</td></tr>
+        <tr><td><code>execution.py</code></td><td>Executes the generated code for the registry path and captures success / result / error / status</td></tr>
+        <tr><td><code>validation.py</code></td><td>Checks the result is a non-empty DataFrame with the expected columns, plus any per-question clinical rule</td></tr>
+        <tr><td><code>correction.py</code></td><td>Bounded, rule-based retry loop: fixes a known set of function-name typos and re-runs</td></tr>
+        <tr><td><code>main_pipeline.py</code></td><td>Wires generation → execution → validation → correction → presentation into <code>run_pipeline(question_id, params)</code></td></tr>
+        <tr><td><code>question_router.py</code></td><td>Controlled natural-language routing: maps free text to one supported question id + parameters (rule-based; never generates code)</td></tr>
+        <tr><td><code>llm_router.py</code> / <code>llm_client.py</code></td><td>Optional LLM-assisted routing fallback (Anthropic / OpenAI / Gemini, chosen by which API key is set); the model may only choose a template id + parameters, never write code</td></tr>
+        <tr><td><code>app.py</code></td><td>Streamlit UI: role-based Doctor / Researcher workspaces, question selection, dynamic parameter widgets, results and audit tabs</td></tr>
+        <tr><td><code>result_presentation.py</code></td><td>Console presentation of a pipeline run</td></tr>
+        <tr><td><code>sandbox.py</code></td><td>AST allow-list + restricted-builtins execution environment for the optional LLM code-generation path</td></tr>
+        <tr><td><code>code_agent.py</code></td><td>The LLM "programmer agent": builds a schema-aware prompt and asks the model for a pandas snippet</td></tr>
+        <tr><td><code>agent_pipeline.py</code></td><td>Guarded code-generation loop: programmer agent → sandbox → validator → refine, mirroring the correction loop's shape</td></tr>
+        <tr><td><code>presentation_agent.py</code></td><td>Suggests a chart for a code-generation result (rule-based, optional LLM override)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Extending the registry: adding a question really is a one-place change</h3>
+    <ol>
+      <li>Add a data-preparation function in <code>data_prep.py</code> that returns a DataFrame.</li>
+      <li>Add a <code>QuestionSpec</code> entry to <code>QUESTION_REGISTRY</code> in <code>questions.py</code> — id, label, parameters, data function, expected columns, and an optional validator and chart spec.</li>
+      <li>If the question needs a new input type, add an entry to <code>PARAM_DEFS</code>.</li>
+    </ol>
+    <p>No changes to <code>app.py</code>, <code>code_generation.py</code>, <code>validation.py</code>, or <code>main_pipeline.py</code> are required — they all read from the registry.</p>
+  </section>
+
+  <section>
+    <h2>Algorithms</h2>
+
+    <h3>Code generation</h3>
+    <p><code>generate_code(spec, params)</code> reads the target data function's own signature with Python's <code>inspect</code> module, so it needs no per-question hard-coded argument list. It builds a call such as <code>result = get_latest_lab_value(199884, 50902)</code> directly from the QuestionSpec and the supplied parameters.</p>
+
+    <h3>Execution</h3>
+    <p>For the registry path, <code>execute_generated_code</code> runs the snippet with Python's <code>exec()</code> against a namespace built only from the registry's known functions — never against arbitrary user code — inside a try/except that captures success, the result object, and any error message and status.</p>
+
+    <h3>Validation</h3>
+    <p><code>validate_result</code> first verifies that execution completed and returned a result. For tabular results it verifies the value is a pandas DataFrame containing all of the question's expected columns and rejects an empty DataFrame (which the UI reports separately as a neutral "no matching records" state). Finally it applies the question-specific rule, where one exists — for example: abnormal-result questions must return only <code>FLAG&nbsp;=&nbsp;abnormal</code> rows; "latest value" and summary questions must return exactly one row; trend and date-range questions must be sorted by time ascending; and the dataset-wide aggregate must satisfy <em>Abnormal + Normal = Total&nbsp;Tests</em> for every admission.</p>
+
+    <h3>Correction</h3>
+    <p><code>run_with_correction</code> executes and validates the code and, on failure, rewrites a small, explicit map of known function-name typos — matched on whole identifiers only, via regex word boundaries, so a wrong name that happens to be a prefix of a valid one is never corrupted — and retries, up to 2 attempts. Every attempt's code, execution outcome, and validation outcome is recorded and shown in the UI's <em>Correction Attempts</em> tab.</p>
+
+    <h3>Sandboxed LLM code generation (optional path)</h3>
+    <p><code>check_code()</code> parses a candidate snippet with Python's <code>ast</code> module and rejects it unless every node type is on an explicit allow-list: imports, loops, function and class definitions, private or dunder attribute access, dangerous builtins, and file-, network-, or evaluation-related methods (<code>to_csv</code>, <code>read_sql</code>, <code>eval</code>, <code>query</code>, …) are all rejected. Accepted code runs in a worker thread inside a restricted namespace containing only <code>pd</code>, a read-only <code>df</code>, and a small set of safe builtins — under a soft timeout and an output row cap — and the result must still pass a deterministic validation gate. On failure, the error feedback is returned to the LLM for another bounded attempt.</p>
+  </section>
+
+  <section>
+    <h2>Data: inputs and preprocessing</h2>
+    <p>The system is built on three source tables of MIMIC-III (Medical Information Mart for Intensive Care): <strong>ADMISSIONS</strong> (one row per hospital admission), <strong>LABEVENTS</strong> (one row per laboratory measurement), and <strong>D_LABITEMS</strong> (a lookup table mapping <code>ITEMID</code> values to human-readable laboratory test names).</p>
+    <p>An initial schema-inspection pass (Google Colab, pandas) quantified missing values in every field the supported questions rely on — notably 371,649 LABEVENTS rows with no <code>HADM_ID</code> (which cannot be attributed to an admission) and 994,847 rows with an empty <code>FLAG</code> (expected: normal results are simply left unflagged rather than explicitly marked "normal"). The cleaning pipeline then:</p>
+    <ol>
+      <li>keeps only the columns the project needs,</li>
+      <li>removes LABEVENTS rows with a null <code>HADM_ID</code>,</li>
+      <li>joins LABEVENTS to ADMISSIONS on <code>HADM_ID</code>, and</li>
+      <li>attaches a readable lab name from D_LABITEMS via <code>ITEMID</code>.</li>
+    </ol>
+    <div class="stats-row">
+      <div class="stat"><div class="value">1,003,949</div><div class="label">rows in cleaned_merged_dataset.csv</div></div>
+      <div class="stat"><div class="value">2,839</div><div class="label">hospital admissions covered</div></div>
+      <div class="stat"><div class="value">2,234</div><div class="label">distinct patients</div></div>
+      <div class="stat"><div class="value">376</div><div class="label">laboratory test types</div></div>
+    </div>
+    <p class="note">The ~130&nbsp;MB dataset file is kept out of version control because of its size; the application downloads it automatically on first run, or it can be placed manually next to <code>app.py</code> (see the <a href="manual.htm">User Manual</a>).</p>
+  </section>
+
+  <section>
+    <h2>The 12 supported questions</h2>
+    <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col">Inputs</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Abnormal lab results for an admission</td><td>Admission</td></tr>
+        <tr><td>2</td><td>Latest value of a lab test</td><td>Admission, lab test</td></tr>
+        <tr><td>3</td><td>Trend of a lab test over time</td><td>Admission, lab test</td></tr>
+        <tr><td>4</td><td>All lab tests during an admission</td><td>Admission</td></tr>
+        <tr><td>5</td><td>Compare first vs last value of a lab test</td><td>Admission, lab test</td></tr>
+        <tr><td>6</td><td>Summary statistics (min / max / mean) of a lab test</td><td>Admission, lab test</td></tr>
+        <tr><td>7</td><td>Count abnormal vs normal results</td><td>Admission</td></tr>
+        <tr><td>8</td><td>Abnormal results for a specific lab test</td><td>Admission, lab test</td></tr>
+        <tr><td>9</td><td>List distinct abnormal lab tests</td><td>Admission</td></tr>
+        <tr><td>10</td><td>Lab values within a date range</td><td>Admission, lab test, date range</td></tr>
+        <tr><td>11</td><td>All admissions for a patient</td><td>Patient</td></tr>
+        <tr><td>12</td><td>Abnormal vs normal counts across all admissions</td><td>None (dataset-wide)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tools &amp; technologies</h2>
+    <ul>
+      <li><strong>Python 3.10+</strong> (developed and tested on Python 3.13), with <strong>pandas</strong> for data loading, preprocessing, and analysis.</li>
+      <li><strong>Streamlit</strong> for the interactive web-based user interface, with an explicitly pinned dark theme (<code>.streamlit/config.toml</code>) so the app renders identically regardless of the viewer's OS or browser theme.</li>
+      <li><strong>pytest</strong> + <strong>pytest-cov</strong> for automated testing, with an 85% minimum coverage gate enforced in <code>pyproject.toml</code> (final coverage: 94%).</li>
+      <li><strong>Optional LLM providers</strong> — Anthropic, OpenAI, or Google Gemini — selected by the available API key and accessed through a lightweight httpx-based client with automatic retries and a mock/none fallback. The system is fully functional with no key at all.</li>
+      <li><strong>uv</strong> for dependency management (<code>pyproject.toml</code> / <code>uv.lock</code>).</li>
+      <li><strong>Dataset:</strong> the MIMIC-III clinical database (ADMISSIONS, LABEVENTS, D_LABITEMS), cleaned and merged into a single working CSV.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div><span class="names">Hala Hillou · Dana Nmarny · Anas Khoury · Alon Engel</span></div>
+  <div>Clinical Lab Analysis System — Seminar: Software Engineering in the Age of AI</div>
+  <div>Department of Information Systems, University of Haifa · 2026</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinical Lab Analysis System — Home</title>
+<meta name="description" content="Clinical Lab Analysis System: a controlled, self-correcting generated-code pipeline for answering predefined clinical laboratory questions over MIMIC-III. Seminar project, University of Haifa.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='8' fill='%230e7490'/%3E%3Cpath d='M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8' stroke='%23ffffff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.htm" aria-label="Clinical Lab Analysis System — home">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="#0e7490"/>
+        <path d="M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      Clinical Lab Analysis System
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.htm" class="active">Home</a>
+      <a href="method.htm">Method</a>
+      <a href="results.htm">Results</a>
+      <a href="demo.htm">Demo</a>
+      <a href="manual.htm">User Manual</a>
+      <a href="papers.htm">Papers</a>
+      <a href="downloads.htm">Downloads</a>
+      <a href="team.htm">Team</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <p class="kicker">Seminar: Software Engineering in the Age of AI · University of Haifa</p>
+    <h1>Clinical Lab Analysis System</h1>
+    <p class="subtitle">A controlled, self-correcting generated-code pipeline for answering predefined clinical laboratory questions over the MIMIC-III (Medical Information Mart for Intensive Care) hospital dataset.</p>
+    <p class="team-line"><strong>Team:</strong> Hala Hillou · Dana Nmarny · Anas Khoury · Alon Engel</p>
+    <ul class="chips">
+      <li class="chip">MIMIC-III</li>
+      <li class="chip">Python · pandas</li>
+      <li class="chip">Streamlit</li>
+      <li class="chip">Guarded LLM code generation</li>
+      <li class="chip neutral">2026</li>
+    </ul>
+
+    <div class="callout">
+      <p class="label">Research question</p>
+      <p>How can laboratory test results recorded during a hospital admission be used to automatically and reliably answer a limited, well-defined set of clinical laboratory analysis questions about hospitalized patients?</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="value">12</div><div class="label">supported question types</div></div>
+      <div class="stat"><div class="value">1,003,949</div><div class="label">rows in the cleaned MIMIC-III dataset</div></div>
+      <div class="stat"><div class="value">170</div><div class="label">automated tests, all passing</div></div>
+      <div class="stat"><div class="value">94%</div><div class="label">line coverage (85% gate enforced)</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <p>For every question, the system <strong>generates a short, readable Python snippet, executes it, validates the output against structural and clinical rules, applies a bounded rule-based correction if needed, and presents the result together with the code that produced it</strong>. The trusted default path answers 12 predefined question types from a single question registry; an optional, off-by-default "Advanced: AI&nbsp;writes&nbsp;code" mode extends the same pipeline to free-form questions inside a hardened sandbox.</p>
+
+    <div class="pipeline-wrap" role="img" aria-label="Pipeline diagram: question, generate code, execute, validate, correct if needed with a retry loop back to execute, then present.">
+      <svg width="980" height="185" viewBox="0 0 980 185" font-family="-apple-system, 'Segoe UI', Roboto, Arial, sans-serif">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#0e7490"/>
+          </marker>
+        </defs>
+        <!-- boxes -->
+        <g font-size="15" font-weight="600" text-anchor="middle">
+          <rect x="10"  y="45" width="140" height="56" rx="10" fill="#e6f5f9" stroke="#0e7490" stroke-width="1.6"/>
+          <text x="80" y="70" fill="#122a37">Question</text>
+          <text x="80" y="89" fill="#5b7284" font-size="11.5" font-weight="400">id or natural language</text>
+
+          <rect x="174" y="45" width="140" height="56" rx="10" fill="#ffffff" stroke="#0e7490" stroke-width="1.6"/>
+          <text x="244" y="78" fill="#122a37">Generate code</text>
+
+          <rect x="338" y="45" width="140" height="56" rx="10" fill="#ffffff" stroke="#0e7490" stroke-width="1.6"/>
+          <text x="408" y="78" fill="#122a37">Execute</text>
+
+          <rect x="502" y="45" width="140" height="56" rx="10" fill="#ffffff" stroke="#0e7490" stroke-width="1.6"/>
+          <text x="572" y="78" fill="#122a37">Validate</text>
+
+          <rect x="666" y="45" width="140" height="56" rx="10" fill="#ffffff" stroke="#0e7490" stroke-width="1.6"/>
+          <text x="736" y="70" fill="#122a37">Correct</text>
+          <text x="736" y="89" fill="#5b7284" font-size="11.5" font-weight="400">only if needed</text>
+
+          <rect x="830" y="45" width="140" height="56" rx="10" fill="#0e7490" stroke="#0e7490" stroke-width="1.6"/>
+          <text x="900" y="70" fill="#ffffff">Present</text>
+          <text x="900" y="89" fill="#cff1f8" font-size="11.5" font-weight="400">result + code + audit</text>
+        </g>
+        <!-- arrows -->
+        <g stroke="#0e7490" stroke-width="2" fill="none">
+          <line x1="150" y1="73" x2="170" y2="73" marker-end="url(#arrow)"/>
+          <line x1="314" y1="73" x2="334" y2="73" marker-end="url(#arrow)"/>
+          <line x1="478" y1="73" x2="498" y2="73" marker-end="url(#arrow)"/>
+          <line x1="642" y1="73" x2="662" y2="73" marker-end="url(#arrow)"/>
+          <line x1="806" y1="73" x2="826" y2="73" marker-end="url(#arrow)"/>
+          <path d="M 736 101 C 736 150, 408 150, 408 105" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+        </g>
+        <text x="572" y="163" fill="#5b7284" font-size="12.5" text-anchor="middle">retry with corrected code (bounded, 2 attempts total)</text>
+      </svg>
+    </div>
+    <p style="margin-top:12px;">Every run is fully auditable: the UI shows the final result alongside the <em>generated code</em>, the <em>validation audit</em>, and the <em>complete correction history</em> — the user can always see how an answer was produced, not just the answer itself.</p>
+  </section>
+
+  <section>
+    <h2>Why it matters</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>Clinical relevance</h3>
+        <p>Fast, correct answers about abnormal results, trends, and admission-level summaries support bedside review by a doctor and reproducible, exportable analysis by a researcher — without either user writing SQL or pandas code themselves.</p>
+      </div>
+      <div class="card">
+        <h3>Software-engineering relevance</h3>
+        <p>A concrete case study in building an auditable "generated code" system — one that shows its work, checks its own output, attempts to repair itself, and only cautiously extends into open-ended code generation by a large language model (LLM) behind a sandbox.</p>
+      </div>
+      <div class="card">
+        <h3>Safety in a sensitive domain</h3>
+        <p>Healthcare data raises the cost of a wrong or hallucinated answer. Restricting the system to a fixed, validated question registry by default — and allowing free-form LLM-authored code only inside a hardened sandbox — is itself a design decision about how much autonomy to give generated code.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>A quick look</h2>
+    <figure>
+      <a href="assets/img/welcome_expanded.png"><img src="assets/img/welcome_expanded.png" alt="The Welcome screen of the Clinical Lab Analysis System, with the Implementation Notes and Project Evaluation sections expanded below the Doctor and Researcher role cards."></a>
+      <figcaption><strong>The Welcome screen.</strong> Users enter through one of two role-based workspaces — <em>Doctor</em> (fast admission-level review) or <em>Researcher</em> (dataset-level, reproducible analysis) — both backed by the same trusted pipeline. Shown here with the page's Implementation Notes and Project Evaluation sections expanded. See more in the <a href="demo.htm">demo gallery</a>.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Explore the project</h2>
+    <div class="grid-3">
+      <a class="card card-link" href="method.htm">
+        <h3>Method &amp; Architecture</h3>
+        <p>The registry-driven pipeline, the module architecture, the algorithms, and the sandbox that guards AI-written code.</p>
+        <p class="go">Read the method →</p>
+      </a>
+      <a class="card card-link" href="results.htm">
+        <h3>Results &amp; Evaluation</h3>
+        <p>Manual evaluation examples, 170 automated tests with 94% coverage, edge cases, baseline comparisons, and conclusions.</p>
+        <p class="go">See the results →</p>
+      </a>
+      <a class="card card-link" href="demo.htm">
+        <h3>Demo &amp; Screenshots</h3>
+        <p>The full walkthrough: both role workspaces, all 12 questions, natural-language input, and the self-correction loop in action.</p>
+        <p class="go">Open the gallery →</p>
+      </a>
+      <a class="card card-link" href="manual.htm">
+        <h3>User Manual</h3>
+        <p>System requirements, installation and run instructions, inputs per question, operation steps, and outputs.</p>
+        <p class="go">Read the manual →</p>
+      </a>
+      <a class="card card-link" href="papers.htm">
+        <h3>Papers</h3>
+        <p>AgentCoder and Self-Edit: what each paper shows, and precisely how each shaped this project.</p>
+        <p class="go">Read the summaries →</p>
+      </a>
+      <a class="card card-link" href="downloads.htm">
+        <h3>Materials &amp; Downloads</h3>
+        <p>The final report and all three presentations — project, AgentCoder, and Self-Edit — in PDF and PPTX, plus links to the papers and the source-code repository.</p>
+        <p class="go">Get the materials →</p>
+      </a>
+      <a class="card card-link" href="team.htm">
+        <h3>Team &amp; Process</h3>
+        <p>Who did what, the development phases, the challenges we hit, how we solved them, and what we learned.</p>
+        <p class="go">Meet the team →</p>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div><span class="names">Hala Hillou · Dana Nmarny · Anas Khoury · Alon Engel</span></div>
+  <div>Clinical Lab Analysis System — Seminar: Software Engineering in the Age of AI</div>
+  <div>Department of Information Systems, University of Haifa · 2026</div>
+</footer>
+
+</body>
+</html>

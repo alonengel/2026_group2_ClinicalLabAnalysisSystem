@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Papers — Clinical Lab Analysis System</title>
+<meta name="description" content="The papers behind the project — AgentCoder and Self-Edit: abstracts, key findings, and exactly how each paper shaped the Clinical Lab Analysis System.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='8' fill='%230e7490'/%3E%3Cpath d='M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8' stroke='%23ffffff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.htm" aria-label="Clinical Lab Analysis System — home">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="#0e7490"/>
+        <path d="M6.5 19.5h5l2.2-6.5 3 10 2.6-7 1.4 3.5h4.8" stroke="#ffffff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      Clinical Lab Analysis System
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.htm">Home</a>
+      <a href="method.htm">Method</a>
+      <a href="results.htm">Results</a>
+      <a href="demo.htm">Demo</a>
+      <a href="manual.htm">User Manual</a>
+      <a href="papers.htm" class="active">Papers</a>
+      <a href="downloads.htm">Downloads</a>
+      <a href="team.htm">Team</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <p class="kicker">Articles read</p>
+    <h1 class="page-title">Papers</h1>
+    <p class="page-lead">Two papers shaped this project. For each: what the paper shows, and precisely how it was used in the Clinical Lab Analysis System.</p>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2 style="margin-top:0;">AgentCoder: Multi-Agent-based Code Generation with Iterative Testing and Optimisation</h2>
+      <p style="color:var(--muted); font-size:0.95rem;">Huang, D., Zhang, J. M., Luck, M., Bu, Q., Qing, Y., &amp; Cui, H. (2023, revised 2024). arXiv:2312.13010 · <a href="https://arxiv.org/pdf/2312.13010" target="_blank" rel="noopener">read the paper (arXiv, external link)</a></p>
+
+      <h3>Abstract</h3>
+      <p>The paper addresses a persistent weakness of code generation based on large language models (LLMs): a single model asked to both write and check its own code tends to balance these two jobs poorly, generating code that looks plausible but fails on real test cases. The authors propose AgentCoder, a multi-agent framework with three specialized, cooperating roles: a <strong>programmer agent</strong> that writes and refines code, a <strong>test designer agent</strong> that independently generates test cases for that code, and a <strong>test executor agent</strong> that runs the code against those tests and reports concrete feedback (pass/fail, error messages) back to the programmer. This separation of concerns — write, independently test, execute and report — lets the programmer iterate using real execution feedback instead of the model's own untrustworthy self-assessment. The main contribution is showing that this lightweight three-agent loop beats both single-agent prompting and heavier multi-agent frameworks: across 9 code-generation models and 12 enhancement approaches, AgentCoder with GPT-4 reaches 96.3% and 91.8% pass@1 on HumanEval and MBPP respectively, versus 90.2% / 78.9% for the prior state of the art, while using roughly a third of the token overhead — evidence that more agents and rounds are not automatically better, and that a small, well-separated set of roles with real execution feedback is what actually drives the improvement.</p>
+
+      <h3>Contribution to our project</h3>
+      <p>AgentCoder's generate → test → execute → feedback loop — and specifically its finding that a small set of clearly separated roles beats a heavier multi-agent framework — shaped the design of our experimental <em>"Advanced: AI writes code"</em> path. <code>agent_pipeline.py</code> implements the same generate → execute → validate → refine shape: <code>code_agent.py</code> plays the programmer-agent role, <code>sandbox.py</code> plays the (deterministic, non-LLM) executor role, and the free-form validator plays a lightweight stand-in for the independent test role. Following AgentCoder's own critique of frameworks such as MetaGPT and ChatDev — that stacking more agents mainly adds token and coordination overhead once the necessary roles exist — we deliberately kept the orchestration lightweight and in-repo rather than adopting CrewAI, AutoGen, or LangGraph, reusing two roles (execution, validation) that our own deterministic modules already provided.</p>
+
+      <h3>Our presentation of the paper</h3>
+      <p style="color:var(--muted); font-size:0.95rem;">Presented in the seminar by Alon Engel and Anas Khoury, together with Othman Khleel.</p>
+      <div class="btn-row">
+        <a class="btn" href="files/AgentCoder_PaperPresentation.pdf">AgentCoder presentation <span class="tag">PDF</span></a>
+        <a class="btn secondary" href="files/AgentCoder_PaperPresentation.pptx">Original slides <span class="tag">PPTX</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2 style="margin-top:0;">Self-Edit: Fault-Aware Code Editor for Code Generation</h2>
+      <p style="color:var(--muted); font-size:0.95rem;">Zhang, K., Li, Z., Li, J., Li, G., &amp; Jin, Z. (2023). Proceedings of ACL 2023 · <a href="https://aclanthology.org/2023.acl-long.45.pdf" target="_blank" rel="noopener">read the paper (ACL Anthology, external link)</a></p>
+
+      <h3>Abstract</h3>
+      <p>This paper starts from the same observation that motivates AgentCoder — LLMs generate code with real but limited accuracy on competitive-programming-style tasks — but proposes a lighter, generate-and-edit pipeline instead of a multi-agent one. Self-Edit has three steps: an LLM generates an initial program from the problem description; the program is executed on the example test case(s) given with the problem, and any error or wrong output is wrapped into a structured <em>"supplementary comment"</em> (e.g. the exact exception and a hint at the fix); and a separate, purpose-trained <strong>fault-aware code editor model</strong> then rewrites the code conditioned on the original program, the problem description, and that comment. Evaluated across 9 LLMs (110M–175B parameters) on the APPS and HumanEval benchmarks, Self-Edit improves average pass@1 by 89% on APPS-dev, 31% on APPS-test, and 48% on HumanEval relative to generating directly from the LLM — and does so with a constant, small sampling budget, outperforming reranking-based post-processing methods that instead sample many candidates and pick one. The key contribution is demonstrating that execution feedback, distilled into a compact structured comment, is enough signal for a dedicated editor model to reliably repair a large fraction of an LLM's own coding mistakes.</p>
+
+      <h3>Contribution to our project</h3>
+      <p>Self-Edit's core idea — run the generated code, turn the execution result into structured feedback, and use that feedback to edit the code before resubmitting — served as the conceptual model for <code>correction.py</code> — its docstring opens with "Correction module (simplified Self-Edit)". Our corrector is a deliberately simplified, rule-based analogue of Self-Edit's learned fault-aware editor: instead of a trained neural editor conditioned on an execution comment, it applies a small, explicit table of known function-name-typo fixes and re-runs — still following Self-Edit's generate → execute → (structured feedback) → edit → resubmit shape, but with a deterministic rule set in place of a learned model, which is appropriate for a bounded, fully specified question registry where the space of likely faults is small and known in advance. The paper's broader finding — that execution feedback alone, without re-sampling from the LLM, repairs a meaningful share of generation errors — is the justification for keeping correction rule-based and cheap rather than requiring another model call every time execution fails.</p>
+
+      <h3>Our presentation of the paper</h3>
+      <p style="color:var(--muted); font-size:0.95rem;">Presented in the seminar by Dana Nmarny and Hala Hillou.</p>
+      <div class="btn-row">
+        <a class="btn" href="files/SelfEdit_PaperPresentation.pdf">Self-Edit presentation <span class="tag">PDF</span></a>
+        <a class="btn secondary" href="files/SelfEdit_PaperPresentation.pptx">Original slides <span class="tag">PPTX</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="note">Both papers are freely available at the external links above. Our own materials — the final report and all three presentations — are collected on the <a href="downloads.htm">Materials &amp; Downloads</a> page.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div><span class="names">Hala Hillou · Dana Nmarny · Anas Khoury · Alon Engel</span></div>
+  <div>Clinical Lab Analysis System — Seminar: Software Engineering in the Age of AI</div>
+  <div>Department of Information Systems, University of Haifa · 2026</div>
+</footer>
+
+</body>
+</html>
