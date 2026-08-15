@@ -21,9 +21,9 @@ A fully standalone static site: plain HTML/CSS, system fonts, no build step, no 
 
 ```bash
 python scripts/check_site.py   # link/hygiene checks (relative links, alt text, no ID-like numbers)
-python scripts/package.py      # builds dist/ClinicalLabAnalysisSystem_2026.zip (course submission format)
+python scripts/package.py      # builds dist/2026_ClinicalLabAnalysisSystem.zip (course submission format)
 ```
 
-The zip contains exactly one root folder (`ClinicalLabAnalysisSystem_2026/`) with `index.htm` inside — per the assignment's standalone-site requirements. Before submitting: unzip to a fresh location, open `index.htm` in a browser, and click through every page and download.
+The zip contains exactly one root folder (`2026_ClinicalLabAnalysisSystem/`, year first per the course convention) with `index.htm` inside — per the assignment's standalone-site requirements. Before submitting: unzip to a fresh location, open `index.htm` in a browser, and click through every page and download.
 
 Requirements, past-site research, and workspace context: see `../IrisCourse/`.

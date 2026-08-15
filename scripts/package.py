@@ -1,9 +1,10 @@
 """Package the site as the course-required standalone zip.
 
-Produces dist/ClinicalLabAnalysisSystem_2026.zip containing exactly one
-root directory, ClinicalLabAnalysisSystem_2026/, with index.htm inside it.
-Only site files are included (pages, assets, files) — repo metadata,
-scripts, and docs are excluded.
+Produces dist/2026_ClinicalLabAnalysisSystem.zip (year first, per the
+course convention) containing exactly one root directory,
+2026_ClinicalLabAnalysisSystem/, with index.htm inside it. Only site
+files are included (pages, assets, files) — repo metadata, scripts, and
+docs are excluded.
 """
 import shutil
 import sys
@@ -11,7 +12,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-NAME = "ClinicalLabAnalysisSystem_2026"
+NAME = "2026_ClinicalLabAnalysisSystem"
 DIST = ROOT / "dist"
 
 INCLUDE_DIRS = ["assets", "files"]

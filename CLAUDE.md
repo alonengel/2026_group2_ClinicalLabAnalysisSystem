@@ -6,7 +6,7 @@ Workspace context, official requirements, and past-site research live in `../Iri
 
 ## Hard constraints (graded requirements — never violate)
 
-- Standalone static site, submitted as `<ProjectName>_2026.zip`: exactly one root folder named like the zip, entry file **`index.htm`**, ALL links relative. Must render correctly opened via `file://` from the unzipped folder.
+- Standalone static site, submitted as `2026_ClinicalLabAnalysisSystem.zip` (year first, per course convention): exactly one root folder named like the zip, entry file **`index.htm`**, ALL links relative. Must render correctly opened via `file://` from the unzipped folder.
 - Fully self-contained: no CDNs, no external fonts/scripts/images. Bundle every asset.
 - Proper English everywhere; Hebrew downloads labeled "(in Hebrew)".
 - Team names + topic visible; **student ID numbers appear nowhere** (pages or linked documents).
