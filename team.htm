@@ -117,6 +117,13 @@
         <p>As the question count grew from 5 toward 12, keeping the UI, code generator, validator, and pipeline in sync by hand became error-prone. <strong>Resolution:</strong> the registry refactor introduced <code>questions.py</code> as the single source of truth. Every component derives its behavior from the registry, so adding a new question now requires updating only one central definition.</p>
       </div>
     </details>
+
+    <details class="challenge">
+      <summary>Why the course website was not built in Google Sites</summary>
+      <div class="body">
+        <p>The website was submitted as a standalone course deliverable, so it had to work from a downloaded folder without depending on hosting, a logged-in Google account, external fonts, remote scripts, or internet access. <strong>Resolution:</strong> we built it with plain HTML and CSS, relative links, bundled images, and a required <code>index.htm</code> entry file. This makes the site portable, self-contained, easy to package as a zip file, and reliable for grading even when opened locally with <code>file://</code>.</p>
+      </div>
+    </details>
   </section>
 
   <section>
