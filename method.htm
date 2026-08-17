@@ -135,6 +135,12 @@
 
   <section>
     <h2>The 12 supported questions</h2>
+    <div class="callout">
+      <p class="label">How the question set was selected</p>
+      <p>The 12 questions were not chosen randomly, and the LLM was not used as the authority for deciding the medical scope. The set was selected from the project requirements, the team's Part 1 data-analysis work, and the actual structure of the MIMIC-III laboratory dataset.</p>
+      <p>Because the project did not have a real doctor or researcher as a direct client, we treated the target users as two expected profiles: a <strong>Doctor</strong> who needs fast admission-level review, and a <strong>Researcher</strong> who needs repeatable, exportable analysis. That is why the questions cover both bedside-style review (abnormal results, latest value, trends, all tests, first-vs-last comparison) and research-style analysis (summary statistics, abnormal/normal counts, date ranges, patient admissions, and a dataset-wide aggregate).</p>
+      <p>LLM assistance was used only as support for brainstorming, wording, and optional natural-language routing. The final question set was accepted only when each question could be answered from the available columns, matched the project goal, served one of the two user profiles, and could be validated with deterministic rules.</p>
+    </div>
     <div class="table-wrap">
     <table class="data">
       <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col">Inputs</th></tr></thead>
