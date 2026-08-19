@@ -48,6 +48,7 @@
       <li><strong>Core dependencies</strong> (installed automatically by <code>uv sync</code>): pandas ≥ 2.2, streamlit ≥ 1.36, httpx ≥ 0.27, python-dotenv ≥ 1.0.</li>
       <li><strong>Development-only dependencies:</strong> pytest, pytest-cov, playwright.</li>
       <li><strong>Optional:</strong> an API key for Anthropic, OpenAI, or Google Gemini — only if the optional large-language-model (LLM) assisted routing or the Advanced "AI writes code" mode is desired. <em>The system is fully functional with no key at all.</em></li>
+      <li><strong>Optional <code>.env</code> file:</strong> a local configuration file that links the app to the selected LLM provider by storing one key such as <code>ANTHROPIC_API_KEY</code>, <code>OPENAI_API_KEY</code>, or <code>GEMINI_API_KEY</code>. It enables the optional AI features, but it is not needed for the 12 predefined questions and should not be committed to Git.</li>
       <li>The cleaned dataset <code>cleaned_merged_dataset.csv</code> (~130&nbsp;MB) — downloaded automatically on first run, or placed manually in the project root next to <code>app.py</code> (a manual copy can be fetched from <a href="https://drive.google.com/file/d/1AwaAmPRDq_kqRmhaVAPwPAR4YpaEsElb/view" target="_blank" rel="noopener">Google Drive, external link</a>).</li>
     </ul>
   </section>
@@ -58,7 +59,7 @@
       <li>Install uv, then from the project root run:
         <pre><code>uv sync</code></pre>
         This creates a local virtual environment and installs every pinned dependency.</li>
-      <li><em>(Optional)</em> Copy <code>.env.example</code> to <code>.env</code> and fill in one provider API key to enable LLM-assisted routing and the Advanced code-generation mode. Leave it empty to run in fully rule-based, deterministic mode.</li>
+      <li><em>(Optional)</em> Copy <code>.env.example</code> to <code>.env</code> and fill in one provider API key to enable LLM-assisted routing and the Advanced code-generation mode. The app reads this file locally with <code>python-dotenv</code>; without it, the system runs in fully rule-based, deterministic mode.</li>
       <li>Ensure <code>cleaned_merged_dataset.csv</code> is present in the project root — or simply start the app and let it download the file automatically on first launch. (It can also be downloaded manually from the <a href="https://drive.google.com/file/d/1AwaAmPRDq_kqRmhaVAPwPAR4YpaEsElb/view" target="_blank" rel="noopener">shared Google Drive link</a> and placed next to <code>app.py</code>.)</li>
       <li>Launch the interactive UI:
         <pre><code>uv run streamlit run app.py</code></pre>
