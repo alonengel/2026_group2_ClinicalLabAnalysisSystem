@@ -134,6 +134,18 @@
         <a href="assets/img/correction_attempts.png"><img src="assets/img/correction_attempts.png" alt="The Correction Attempts tab showing a failed first attempt with a misspelled function name and a successful auto-repaired second attempt."></a>
         <figcaption><strong>Self-correction, live.</strong> With the "inject a typo" demo enabled, attempt&nbsp;1 fails on a misspelled function name; the corrector repairs it and attempt&nbsp;2 passes.</figcaption>
       </figure>
+      <figure>
+        <a href="assets/img/escalation_popup.png"><img src="assets/img/escalation_popup.png" alt="The escalation dialog offering to re-run an unmatched natural-language question in the Advanced AI-writes-code mode, with Run with Advanced and Cancel buttons."></a>
+        <figcaption><strong>No dead ends.</strong> When no template matches a typed question ("last 10 abnormal results across the whole database"), a popup offers to re-run it in the Advanced mode — or cancel.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/advanced_mode.png"><img src="assets/img/advanced_mode.png" alt="A successful Advanced-mode run: the LLM-written sandboxed pandas code answers a free-form question, with validation passed and the AI Process, Generated Code, and Attempts tabs."></a>
+        <figcaption><strong>Advanced: AI writes code.</strong> A free-form question outside the 12 templates ("the 5 most common abnormal lab tests across all admissions"): the LLM-written pandas snippet ran in the sandbox, passed validation on the first attempt, and ships with Final Result / AI Process / Generated Code / Attempts tabs.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/advanced_blocked.png"><img src="assets/img/advanced_blocked.png" alt="An Advanced-mode run where the sandbox blocked the generated code on all three attempts and the system reports it could not produce a valid result."></a>
+        <figcaption><strong>Guardrails in action.</strong> An Advanced run where the sandbox blocked the generated code across all three bounded attempts — the system fails safely with an explicit status instead of showing an unverified answer.</figcaption>
+      </figure>
     </div>
     <p class="note">Want to run it yourself? The <a href="manual.htm">User Manual</a> has the full installation and run instructions, and the source code is linked on the <a href="downloads.htm">Downloads</a> page.</p>
   </section>

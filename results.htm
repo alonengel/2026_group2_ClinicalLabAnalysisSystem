@@ -45,6 +45,11 @@
       <div class="stat"><div class="value">94%</div><div class="label">line coverage across the codebase</div></div>
       <div class="stat"><div class="value">85%</div><div class="label">minimum coverage gate enforced in pyproject.toml</div></div>
     </div>
+
+    <div class="callout">
+      <p class="label">Evaluation procedure</p>
+      <p>The system was evaluated in five complementary steps: <strong>(1)</strong> manual verification of every question type on multiple admissions and patients against the source data; <strong>(2)</strong> an automated suite of 170 unit and integration tests; <strong>(3)</strong> end-to-end tests driving the real UI through all 12 questions in both role workspaces; <strong>(4)</strong> negative and edge-case testing of every failure path; and <strong>(5)</strong> internal baseline comparisons that ablate each guardrail. <strong>Key findings:</strong> all 12 question types pass both manual and automated checks, every injected failure becomes an explicit outcome or an automatic repair rather than a silent error, and each guardrail demonstrably catches failures that would otherwise pass unnoticed — the sections below report each step in detail.</p>
+    </div>
   </section>
 
   <section>
@@ -115,6 +120,11 @@
             <td class="covcell"><span class="covnum"><strong>94%</strong></span><div class="covbar" aria-hidden="true"><span style="width:94%"></span></div></td></tr>
       </tbody>
     </table>
+    </div>
+
+    <div class="callout">
+      <p class="label">Why 170 tests</p>
+      <p>The suite follows a risk-based approach rather than chasing a number: every core responsibility has at least one direct test, the highest-risk paths (validation failures, sandbox rejection, routing decisions, no-record states) have both positive and negative tests, and end-to-end tests drive both role workspaces through all 12 questions. Taken together, that gives three kinds of coverage: <strong>code coverage</strong> (94% of lines, 85% gate enforced), <strong>bug &amp; failure coverage</strong> (negative tests for every error path, plus regression tests that pin previously fixed bugs, such as the typo-corrector regression), and <strong>flow coverage</strong> (end-to-end tests from input widgets to rendered results). Because the suite is deterministic and mostly offline, the same checks run identically after every change, without depending on a live LLM response. The full per-test breakdown is in the <a href="files/ClinicalLabAnalysisSystem_TestReport.pdf">test report (PDF)</a>.</p>
     </div>
   </section>
 

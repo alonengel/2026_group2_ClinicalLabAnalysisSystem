@@ -119,9 +119,37 @@
     </details>
 
     <details class="challenge">
+      <summary>Choosing the 12 questions without a real clinical client</summary>
+      <div class="body">
+        <p>The project had no doctor or researcher acting as a direct client, so no one could simply hand us the question list. <strong>Resolution:</strong> we grounded the scope in research — how Israeli health-fund portals present lab results (parts of Maccabi's Health Guide, Clalit's Your Health portal), the team's Part 1 data-analysis work, and iterative brainstorming sessions with an LLM (Claude) — then modeled two user profiles (Doctor: narrow, admission-specific answers; Researcher: patterns across the data) and accepted a question only if it met four engineering criteria: answerable from the dataset columns, matching the project goal, meaningful for one of the two profiles, and validatable with deterministic rules. The full rationale is on the <a href="method.htm">Method page</a>.</p>
+      </div>
+    </details>
+
+    <details class="challenge">
+      <summary>Proving the test suite is sufficient, not just large</summary>
+      <div class="body">
+        <p>A count like 170 tests says nothing by itself. <strong>Resolution:</strong> the suite was built risk-first and argued in terms of three kinds of coverage — <em>code</em> coverage (94% of lines, 85% gate enforced), <em>bug &amp; failure</em> coverage (negative tests for every error path, plus regression tests that pin previously fixed bugs), and <em>flow</em> coverage (end-to-end tests driving both role workspaces through all 12 questions). The breakdown is on the <a href="results.htm">Results page</a>.</p>
+      </div>
+    </details>
+
+    <details class="challenge">
+      <summary>Demonstrating self-correction when the generator never fails</summary>
+      <div class="body">
+        <p>The registry-driven generator never produces a typo on its own — which made the correction loop impossible to show in a live demo. <strong>Resolution:</strong> a "Demo: inject a typo" checkbox (available for questions 1–5) deliberately corrupts the generated function name, so any examiner can watch the loop detect the failure, repair the name, and re-run. The before/after is captured in the <a href="demo.htm">demo gallery</a>.</p>
+      </div>
+    </details>
+
+    <details class="challenge">
+      <summary>No room for market validation or a clinician-tested proof of concept</summary>
+      <div class="body">
+        <p>Within the size and time limits of a one-semester university seminar, there was no realistic way to run market validation or put the proof of concept in front of practicing clinicians — no real users, no external baseline system, and no time for a formal user study. <strong>Resolution:</strong> we treated this as an explicit scope limitation rather than papering over it. User needs were approximated through portal research and the two role profiles, the evaluation relied on internal baselines that ablate each guardrail (see <a href="results.htm">Results</a>), and the report's limitations section states the gap openly — with a clinician/researcher user study proposed in future work.</p>
+      </div>
+    </details>
+
+    <details class="challenge">
       <summary>Why the course website was not built in Google Sites</summary>
       <div class="body">
-        <p><strong>Design quality is graded, and Google Sites caps it.</strong> The assignment grades whether the site is readable, easy to navigate, uniform, and aesthetic. Our review of 39 past course sites showed that Google Sites teams usually ended with the same generic default template; even the strongest 2025 Google Sites example, Coretexers, was still weakest visually. Standalone HTML/CSS let us build a real design system: the clinical theme, stat tiles, coverage bars, SVG pipeline diagram, styled tables, and captioned screenshot gallery.</p>
+        <p><strong>The first reason is the honest one: Google Sites is visually basic.</strong> Its templates are plain, customization is shallow, and it has no building blocks for the components this site relies on — the clinical design theme, stat tiles, coverage bars, the SVG pipeline diagram, styled tables, and the captioned screenshot gallery. The assignment explicitly grades aesthetics and uniformity, and our review of 39 past course sites showed Google Sites teams usually ending with the same generic default template. Standalone HTML/CSS was the only way to build a site that looks designed rather than assembled.</p>
         <p><strong>Self-contained files remove permission risk.</strong> Google Sites submissions often rely on Google Drive links, and several past sites had files behind permission walls or dead links. Our site keeps every PDF and PPTX inside the submitted folder with relative links, so it works offline from the unzipped folder with nothing external to break.</p>
         <p><strong>The submission is more durable.</strong> The zip is graded exactly as built. Google Sites requires ownership transfer and can later become private or login-walled, as happened to the 2019 team's Google Site. A standalone zip cannot lose permissions, disappear behind account access, or change after submission.</p>
         <p><strong>The precedent is accepted.</strong> Strong previous course submissions, including the 2024 cognitive-bias site and the 2023 Speedsters site, used standalone delivery. Course staff also republish standalone zips on GitHub Pages, so this is a normal accepted path.</p>

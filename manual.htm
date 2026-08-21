@@ -48,7 +48,7 @@
       <li><strong>Core dependencies</strong> (installed automatically by <code>uv sync</code>): pandas ≥ 2.2, streamlit ≥ 1.36, httpx ≥ 0.27, python-dotenv ≥ 1.0.</li>
       <li><strong>Development-only dependencies:</strong> pytest, pytest-cov, playwright.</li>
       <li><strong>Optional:</strong> an API key for Anthropic, OpenAI, or Google Gemini — only if the optional large-language-model (LLM) assisted routing or the Advanced "AI writes code" mode is desired. <em>The system is fully functional with no key at all.</em></li>
-      <li><strong>Optional <code>.env</code> file:</strong> a local configuration file that links the app to the selected LLM provider by storing one key such as <code>ANTHROPIC_API_KEY</code>, <code>OPENAI_API_KEY</code>, or <code>GEMINI_API_KEY</code>. It enables the optional AI features, but it is not needed for the 12 predefined questions and should not be committed to Git.</li>
+      <li><strong>Optional <code>.env</code> file:</strong> a local configuration file that links the app to the selected LLM provider by storing one key such as <code>ANTHROPIC_API_KEY</code>, <code>OPENAI_API_KEY</code>, or <code>GOOGLE_API_KEY</code> (matching <code>.env.example</code>). It enables the optional AI features, but it is not needed for the 12 predefined questions and should not be committed to Git.</li>
       <li>The cleaned dataset <code>cleaned_merged_dataset.csv</code> (~130&nbsp;MB) — downloaded automatically on first run, or placed manually in the project root next to <code>app.py</code> (a manual copy can be fetched from <a href="https://drive.google.com/file/d/1AwaAmPRDq_kqRmhaVAPwPAR4YpaEsElb/view" target="_blank" rel="noopener">Google Drive, external link</a>).</li>
     </ul>
   </section>
@@ -56,6 +56,10 @@
   <section>
     <h2>2. Installation and running the system</h2>
     <ol>
+      <li>Get the code — clone the repository:
+        <pre><code>git clone https://github.com/alonengel/seminar-project.git
+cd seminar-project</code></pre>
+        (Or download the repository as a ZIP from <a href="https://github.com/alonengel/seminar-project" target="_blank" rel="noopener">GitHub</a> and extract it — no git required.)</li>
       <li>Install uv, then from the project root run:
         <pre><code>uv sync</code></pre>
         This creates a local virtual environment and installs every pinned dependency.</li>
@@ -104,6 +108,25 @@
       <li>Click <strong>Run Analysis</strong> (or <strong>Interpret &amp; Run</strong> for the natural-language box).</li>
     </ol>
     <p class="note">If neither the rules nor the AI-assisted router can match a typed question (and an API key is configured), a popup offers to re-run it in the Advanced "AI writes code" mode — or cancel — so you are never left at a dead end.</p>
+
+    <div class="gallery">
+      <figure>
+        <a href="assets/img/welcome.png"><img src="assets/img/welcome.png" alt="The Welcome screen with the Doctor and Researcher role cards — the entry point of step 1."></a>
+        <figcaption><strong>Step 1.</strong> The Welcome screen: choose the Doctor or Researcher workspace.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/doctor_questions.png"><img src="assets/img/doctor_questions.png" alt="The Doctor workspace's question cards, each showing its category, role-focused description, and required inputs."></a>
+        <figcaption><strong>Step 2.</strong> Each workspace surfaces its role's questions as cards; one click loads a question into the analysis panel.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q06.png"><img src="assets/img/q06.png" alt="A complete run of the summary-statistics question: parameter widgets, the Run Analysis button, the status banner, metric cards, and output tabs."></a>
+        <figcaption><strong>Steps 3–5.</strong> A complete run: fill the question's parameter widgets, click Run Analysis, and read the status banner, summary metric cards, and output tabs.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/q12.png"><img src="assets/img/q12.png" alt="Outputs of the dataset-wide question in the Researcher workspace, with the status line, summary metrics, and the four result tabs."></a>
+        <figcaption><strong>The outputs</strong> (here for the dataset-wide Q12 in the Researcher workspace): color-coded status, summary metrics, and the Final Result / Validation Audit / Correction Attempts / Generated Code tabs. More screenshots of every question are in the <a href="demo.htm">demo gallery</a>.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <section>
