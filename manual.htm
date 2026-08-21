@@ -68,11 +68,35 @@ cd seminar-project</code></pre>
       <li>Launch the interactive UI:
         <pre><code>uv run streamlit run app.py</code></pre>
         then open the printed local URL (typically <code>http://localhost:8501</code>).</li>
-      <li>Alternatively, run a single question end-to-end from the command line:
-        <pre><code>uv run python main_pipeline.py</code></pre></li>
-      <li>Run the automated test suite (170 tests, with a coverage report):
-        <pre><code>uv run pytest</code></pre></li>
     </ol>
+    <p>Beyond the UI, two more entry points are available at any time:</p>
+    <ul>
+      <li><strong>Console pipeline</strong> — a headless sanity check of the whole system, with no UI, no browser, and no API key:
+        <pre><code>uv run python main_pipeline.py</code></pre>
+        It runs one sample question through generate → execute → validate → correct → present and prints the full audit trail: the question and parameters, the generated code, execution and validation status, whether correction fired, and the final result table.</li>
+      <li><strong>Test suite</strong> — the 170 automated tests with a coverage report:
+        <pre><code>uv run pytest</code></pre></li>
+    </ul>
+
+    <p>The full installation, captured on a clean machine:</p>
+    <div class="gallery">
+      <figure>
+        <a href="assets/img/install_01_clone.png"><img src="assets/img/install_01_clone.png" alt="Terminal: git clone of the seminar-project repository completing, then cd into the project folder."></a>
+        <figcaption><strong>Step 1.</strong> Cloning the repository and entering the project folder.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/install_02_uvsync.png"><img src="assets/img/install_02_uvsync.png" alt="Terminal: uv sync creating a virtual environment and installing all 56 pinned packages in under a second."></a>
+        <figcaption><strong>Step 2.</strong> <code>uv sync</code> creates the virtual environment and installs every pinned dependency.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/install_03_firstrun.png"><img src="assets/img/install_03_firstrun.png" alt="Terminal: first launch of the Streamlit app — the server starts, the cleaned dataset downloads automatically from Google Drive, and the app notes that without an API key it runs in rule-based mode."></a>
+        <figcaption><strong>Steps 4–5.</strong> First launch: the app downloads the dataset automatically (~130&nbsp;MB), and — with no API key — states it runs in rule-based mode only, exactly as documented above.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/img/install_04_pipeline.png"><img src="assets/img/install_04_pipeline.png" alt="Terminal: uv run python main_pipeline.py printing the full audit trail — question, parameters, generated code, execution and validation status, and the final result table."></a>
+        <figcaption><strong>The console pipeline.</strong> <code>uv run python main_pipeline.py</code> — one question end-to-end with the complete audit trail, no UI and no API key.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <section>
