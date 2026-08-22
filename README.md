@@ -1,6 +1,6 @@
 # seminar-website
 
-> **Note:** This repository is the submission copy of the course website, under its course-convention name (`2026_ClinicalLabAnalysisSystem`). It mirrors the team's working repository, [alonengel/seminar-website](https://github.com/alonengel/seminar-website), where day-to-day development took place.
+> **Note:** This repository is the submission copy of the course website, under its course-convention name (`2026_group2_ClinicalLabAnalysisSystem`). It mirrors the team's working repository, [alonengel/seminar-website](https://github.com/alonengel/seminar-website), where day-to-day development took place. The project source code is in the repository **2026_group2_ClinicalLabAnalysisSystem-code** under the same owner as this repository.
 
 
 Course website for the **Clinical Lab Analysis System** — final deliverable of the University of Haifa seminar *Software Engineering in the Age of AI* (team: Hala Hillou, Dana Nmarny, Anas Khoury, Alon Engel).
