@@ -1,5 +1,8 @@
 # seminar-website
 
+> **Note:** This repository is the submission copy of the course website, under its course-convention name (`2026_ClinicalLabAnalysisSystem`). It mirrors the team's working repository, [alonengel/seminar-website](https://github.com/alonengel/seminar-website), where day-to-day development took place.
+
+
 Course website for the **Clinical Lab Analysis System** — final deliverable of the University of Haifa seminar *Software Engineering in the Age of AI* (team: Hala Hillou, Dana Nmarny, Anas Khoury, Alon Engel).
 
 A fully standalone static site: plain HTML/CSS, system fonts, no build step, no CDNs, no JavaScript required. Entry file is `index.htm`; all links are relative, so the site works opened directly from a local folder (`file://`) — which is exactly how the course submission is graded.
